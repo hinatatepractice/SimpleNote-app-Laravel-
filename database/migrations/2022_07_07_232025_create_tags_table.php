@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('memos', function (Blueprint $table) {
-            $table->bigInteger('tag_id')->nullable()->after('user_id');
+        Schema::create('tags', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name', 100);
+            $table->integer('user_id');
+            $table->timestamps();
         });
     }
 
