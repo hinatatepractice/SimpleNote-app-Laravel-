@@ -23,24 +23,35 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
+    // public function index()
+    // {
+    //     //ユーザー情報を取得
+    //     $user = \Auth::user();
+    //     //メモ一覧を取得
+    //     // $memos_all = Memo::get(); //こうするとテーブル内の全てのメモを取ってこれる(ユーザー関係なしに)
+    //     // dd($memos_all);
+    //     $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
+    //     // dd($memos);
+    //     return view('create', compact('user', 'memos'));
+    // }
+
     public function index()
     {
-        //ユーザー情報を取得
-        $user = \Auth::user();
-        //メモ一覧を取得
-        // $memos_all = Memo::get(); //こうするとテーブル内の全てのメモを取ってこれる(ユーザー関係なしに)
-        // dd($memos_all);
-        $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
-        // dd($memos);
-        return view('create', compact('user', 'memos'));
+        return view('create');
     }
+
+    // public function create()
+    // {
+    //     //ログインしているユーザー情報を渡す
+    //     $user = \Auth::user();
+    //     $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
+    //     return view('create', compact('user', 'memos'));
+    // }
 
     public function create()
     {
-        //ログインしているユーザー情報を渡す
-        $user = \Auth::user();
-        $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
-        return view('create', compact('user', 'memos'));
+        return view('create');
     }
 
     public function store(Request $request)
@@ -75,15 +86,23 @@ class HomeController extends Controller
         return redirect('home');
     }
 
+    // public function edit($id)
+    // {
+    //     $user = \Auth::user();
+    //     $memo = Memo::where('status', 1)->where('id', $id)->where('user_id', $user['id'])->first();
+    //     // dd($memo);
+    //     $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
+    //     $tags = Tag::where('user_id', $user['id'])->get();
+        
+    //     return view('edit', compact('user', 'memo', 'memos', 'tags'));
+    // }
+
     public function edit($id)
     {
         $user = \Auth::user();
         $memo = Memo::where('status', 1)->where('id', $id)->where('user_id', $user['id'])->first();
-        // dd($memo);
-        $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
-        $tags = Tag::where('user_id', $user['id'])->get();
         
-        return view('edit', compact('user', 'memo', 'memos', 'tags'));
+        return view('edit', compact('memo'));
     }
 
     public function update(Request $request, $id)
@@ -103,7 +122,7 @@ class HomeController extends Controller
         $inputs = $request->all();
         
         //論理削除モデルを採用しているので、今回はstatusを2に変えることで削除したものとする
-        Memo::where('id', $id)->update(['status' => 2]);
+        Memo::where('id', $id)->update([ 'status' => 2 ]);
 
         //普通の削除の場合
         // Memo::where('id', $id)->delete();
