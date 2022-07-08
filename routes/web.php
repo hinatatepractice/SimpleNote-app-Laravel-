@@ -16,16 +16,18 @@ use App\Http\Controllers\HomeController;
 
 Auth::routes();
 
-//ホーム画面
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//新規作成画面遷移
-Route::get('/create', [HomeController::class, 'create'])->name('create');
-//新規メモ保存
-Route::post('/store', [HomeController::class, 'store'])->name('store');
-//編集画面遷移
-Route::get('/edit/{id}', [HomeController::class, 'edit'])->name('edit');
-//メモ更新
-Route::post('/update/{id}', [HomeController::class, 'update'])->name('update');
-//削除
-Route::post('/delete/{id}', [HomeController::class, 'delete'])->name('delete');
+Route::group(['middleware' => 'auth'], function () {        //ログインしている状態でないと以下ルーティングはできない
+    //ホーム画面
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    //新規作成画面遷移
+    Route::get('/create', [HomeController::class, 'create'])->name('create');
+    //新規メモ保存
+    Route::post('/store', [HomeController::class, 'store'])->name('store');
+    //編集画面遷移
+    Route::get('/edit/{id}', [HomeController::class, 'edit'])->name('edit');
+    //メモ更新
+    Route::post('/update/{id}', [HomeController::class, 'update'])->name('update');
+    //削除
+    Route::post('/delete/{id}', [HomeController::class, 'delete'])->name('delete');
+});
