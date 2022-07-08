@@ -50,17 +50,23 @@ class HomeController extends Controller
         //POSTされたデータをDB(memosテーブル)に挿入
         //MEMOモデルにDBへ保存する命令を出す
 
-        //先にタグをインサート
-        $tag_id = Tag::insertGetId([
-            'name' => $data['tag'], 
-            'user_id' => $data['user_id']]);   //insertGetId()はテーブルに新規データをinsertし、成功したらIdを返す。
-        // dd($tag_id);
-
+        //すでに同じタグがあるか先に判定する
+        $exist_tag = Tag::where('name', $data['tag'])->where('user_id', $data['user_id'])->first(); //first()のところをexists()で同じタグが存在するか判定(boolean)する方法もある
+        // dd($is_exist);
+        if(empty($exist_tag['id'])){           //同じユーザーで、かつ新規で作成したタグが既存のタグとダブっていないか確認(ユーザーが違えばタグの名前がダブってても判定できるので問題なし)
+            //先にタグをインサート
+            $tag_id = Tag::insertGetId([       //insertGetId()はテーブルに新規データをinsertし、成功したらIdを返す。
+                'name' => $data['tag'], 
+                'user_id' => $data['user_id']
+            ]);
+        }else{                                 //既存のダブっているタグが存在している場合、そのタグを使う
+            $tag_id = $exist_tag;
+        }
         //タグのIDが判明
         //タグIDをmemosテーブルに入れる
         $memo_id = Memo::insertGetId([
-            'content' => $data['content'], 
-            'user_id' => $data['user_id'], 
+            'content' => $data['content'],
+            'user_id' => $data['user_id'],
             'tag_id' => $tag_id,
             'status' => 1
         ]);
@@ -90,5 +96,15 @@ class HomeController extends Controller
         ]);
 
         return redirect()->route('home');
+    }
+
+    public function delete(Request $request, $id) 
+    {
+        //論理削除モデルを採用しているので、今回はstatusを2に変えることで削除したものとする
+        $inputs = $request->all();
+        
+        //普通の削除の場合
+        // Memo::where('id', $id)->delete();
+
     }
 }

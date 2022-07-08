@@ -5,7 +5,7 @@
     <div class="card w-100">
         <div class="card-header d-flex justify-content-between">
             メモ編集
-            <form method='POST' action="/delete/{{$memo['id']}}" id='delete-form'>
+            <form method='POST' action="{{ route('delete', ['id' => $memo['id']] ) }}" id='delete-form'>
                 @csrf
                 <button class='p-0 mr-2' style='border:none;'><i id='delete-button' class="fas fa-trash"></i></button>
             </form>  

@@ -30,3 +30,5 @@ Route::post('/store', [HomeController::class, 'store'])->name('store');
 Route::get('/edit/{id}', [HomeController::class, 'edit'])->name('edit');
 //メモ更新
 Route::post('/update/{id}', [HomeController::class, 'update'])->name('update');
+//削除
+Route::post('/delete/{id}', [HomeController::class, 'delete'])->name('delete');
