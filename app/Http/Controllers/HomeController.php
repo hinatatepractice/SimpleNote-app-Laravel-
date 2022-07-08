@@ -32,7 +32,7 @@ class HomeController extends Controller
         // dd($memos_all);
         $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
         // dd($memos);
-        return view('home', compact('user', 'memos'));
+        return view('create', compact('user', 'memos'));
     }
 
     public function create()
@@ -100,11 +100,14 @@ class HomeController extends Controller
 
     public function delete(Request $request, $id) 
     {
-        //論理削除モデルを採用しているので、今回はstatusを2に変えることで削除したものとする
         $inputs = $request->all();
         
+        //論理削除モデルを採用しているので、今回はstatusを2に変えることで削除したものとする
+        Memo::where('id', $id)->update(['status' => 2]);
+
         //普通の削除の場合
         // Memo::where('id', $id)->delete();
 
+        return redirect()->route('home')->with('success', '削除が完了しました。');  //with()でapp.blade.php内の@if(session('success'))でメッセージを表示
     }
 }

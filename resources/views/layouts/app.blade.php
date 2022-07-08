@@ -80,7 +80,8 @@
         </nav>
 
         <main class="main">
-        @if(session('success'))
+        <!-- Bootstrapのフラッシュメッセージ機能導入-->
+        @if(session('success')) <!-- session()にすることで1回だけ読み込んだ時に発動(redirect()と組み合わせる) -->
             <div class="alert alert-success" role="alert">
               {{ session('success') }}
             </div>
