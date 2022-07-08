@@ -28,9 +28,9 @@ class HomeController extends Controller
         //メモ一覧を取得
         // $memos_all = Memo::get(); //こうするとテーブル内の全てのメモを取ってこれる(ユーザー関係なしに)
         // dd($memos_all);
-        $memos = Memo::where('user_id', $user['id'])->where('status', 1)->get();
+        $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
         // dd($memos);
-        return view('home', compact('memos'));
+        return view('home', compact('user', 'memos'));
     }
 
     public function create()
@@ -51,5 +51,24 @@ class HomeController extends Controller
         ]);
 
         return redirect('home');
+    }
+
+    public function edit($id)
+    {
+        $user = \Auth::user();
+        $memo = Memo::where('status', 1)->where('id', $id)->where('user_id', $user['id'])->first();
+        // dd($memo);
+        $memos = Memo::where('user_id', $user['id'])->where('status', 1)->orderBy('updated_at', 'DESC')->get(); //statusは論理削除用
+        
+        return view('edit', compact('user', 'memo', 'memos'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $inputs = $request->all();
+        // dd($inputs);
+        Memo::where('id', $id)->update(['content' => $inputs['content']]);
+
+        return redirect()->route('home');
     }
 }
